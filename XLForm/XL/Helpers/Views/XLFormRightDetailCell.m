@@ -24,12 +24,38 @@
 // THE SOFTWARE.
 
 #import "XLFormRightDetailCell.h"
+#import "XLFormRowDescriptor.h"
 
 @implementation XLFormRightDetailCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (void)configure
 {
-    return [super initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:reuseIdentifier];
+    [super configure];
+    self.textLabel.numberOfLines = 0;
+    self.textLabel.lineBreakMode = NSLineBreakByWordWrapping;
 }
+
+- (void)update
+{
+    [super update];
+    self.textLabel.text = self.rowDescriptor.title;
+    self.textLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    self.textLabel.textColor  = self.rowDescriptor.disabled ? [UIColor grayColor] : [UIColor blackColor];
+    
+}
+
++(CGFloat)formDescriptorCellHeightForRowDescriptor:(XLFormRowDescriptor *)rowDescriptor
+{
+    UILabel *gettingSizeLabel = [[UILabel alloc] init];
+    gettingSizeLabel.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    gettingSizeLabel.text = rowDescriptor.title;
+    gettingSizeLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    gettingSizeLabel.numberOfLines = 0;
+    CGSize constraintSize = CGSizeMake(252.0f, MAXFLOAT);
+    CGSize labelSize = [gettingSizeLabel sizeThatFits:constraintSize];
+    
+    return labelSize.height + 30.0f;
+}
+
 
 @end

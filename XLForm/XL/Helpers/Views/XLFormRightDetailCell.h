@@ -23,8 +23,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "XLFormBaseCell.h"
 #import <UIKit/UIKit.h>
 
-@interface XLFormRightDetailCell : UITableViewCell
+@interface XLFormRightDetailCell : XLFormBaseCell
+
+
 
 @end
