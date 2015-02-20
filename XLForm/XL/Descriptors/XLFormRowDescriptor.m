@@ -153,19 +153,42 @@
     
     if (self.required) {
         // do required validation here
-        if (self.value == nil) { // || value.length() == 0
-            valStatus.isValid = NO;
-            NSString *msg = nil;
-            if (self.requireMsg != nil) {
-                msg = self.requireMsg;
-            } else {
-                // default message for required msg
-                msg = NSLocalizedString(@"%@ can't be empty", nil);
+        NSLog(@"validationValue: %@", self.value);
+        
+        Class boolClass = [[NSNumber numberWithBool:YES] class];
+        if ([self.value isKindOfClass:boolClass]) {
+            // is bool
+            int i = [self.value intValue];
+            if (i == 0){
+                valStatus.isValid = NO;
+                NSString *msg = nil;
+                if (self.requireMsg != nil) {
+                    msg = self.requireMsg;
+                } else {
+                    // default message for required msg
+                    msg = NSLocalizedString(@"%@ can't be empty", nil);
+                }
+                valStatus.msg = [NSString stringWithFormat:msg, self.title];
+                
+                return valStatus;
             }
-            valStatus.msg = [NSString stringWithFormat:msg, self.title];
+        } else {
+            if (self.value == nil || self.value == [NSNull null]) { // || value.length() == 0
             
-            return valStatus;
+                valStatus.isValid = NO;
+                NSString *msg = nil;
+                if (self.requireMsg != nil) {
+                    msg = self.requireMsg;
+                } else {
+                    // default message for required msg
+                    msg = NSLocalizedString(@"%@ can't be empty", nil);
+                }
+                valStatus.msg = [NSString stringWithFormat:msg, self.title];
+                
+                return valStatus;
+            }
         }
+        
     } else {
         // if user has not enter anything, we dun display the valid icon
         if (self.value == nil) {// || value.length() == 0
