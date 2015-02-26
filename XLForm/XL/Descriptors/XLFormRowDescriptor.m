@@ -154,12 +154,27 @@
     if (self.required) {
         // do required validation here
         NSLog(@"validationValue: %@", self.value);
-        
+        Class stringClass = [[NSString stringWithFormat:@""] class];
         Class boolClass = [[NSNumber numberWithBool:YES] class];
         if ([self.value isKindOfClass:boolClass]) {
             // is bool
             int i = [self.value intValue];
             if (i == 0){
+                valStatus.isValid = NO;
+                NSString *msg = nil;
+                if (self.requireMsg != nil) {
+                    msg = self.requireMsg;
+                } else {
+                    // default message for required msg
+                    msg = NSLocalizedString(@"%@ can't be empty", nil);
+                }
+                valStatus.msg = [NSString stringWithFormat:msg, self.title];
+                
+                return valStatus;
+            }
+        } else if ([self.value isKindOfClass:stringClass]){
+            NSString * testStringValidation = self.value;
+            if ([testStringValidation length] == 0){
                 valStatus.isValid = NO;
                 NSString *msg = nil;
                 if (self.requireMsg != nil) {
