@@ -391,17 +391,19 @@
 
 -(XLFormValidationStatus *)doValidation
 {
-    XLFormValidationStatus *valStatus = nil;
+    XLFormValidationStatus *valStatus = [XLFormValidationStatus new];
+    valStatus.msg = nil;
+    valStatus.isValid = YES;
     
     if (self.required) {
         // do required validation here
         NSLog(@"validationValue: %@", self.value);
-        Class stringClass = [[NSString stringWithFormat:@""] class];
         Class boolClass = [[NSNumber numberWithBool:YES] class];
         if ([self.value isKindOfClass:boolClass]) {
             // is bool
             int i = [self.value intValue];
             if (i == 0){
+                
                 valStatus.isValid = NO;
                 NSString *msg = nil;
                 if (self.requireMsg != nil) {
@@ -414,8 +416,9 @@
                 
                 return valStatus;
             }
-        } else if ([self.value isKindOfClass:stringClass]){
+        } else if ([self.value isKindOfClass:[NSString class]]){
             NSString * testStringValidation = self.value;
+            
             if ([testStringValidation length] == 0){
                 valStatus.isValid = NO;
                 NSString *msg = nil;
@@ -426,12 +429,11 @@
                     msg = NSLocalizedString(@"%@ can't be empty", nil);
                 }
                 valStatus.msg = [NSString stringWithFormat:msg, self.title];
-                
                 return valStatus;
             }
+            
         } else {
             if (self.value == nil || self.value == [NSNull null]) { // || value.length() == 0
-            
                 valStatus.isValid = NO;
                 NSString *msg = nil;
                 if (self.requireMsg != nil) {
@@ -441,8 +443,8 @@
                     msg = NSLocalizedString(@"%@ can't be empty", nil);
                 }
                 valStatus.msg = [NSString stringWithFormat:msg, self.title];
-                
                 return valStatus;
+                
             }
         }
         
@@ -450,8 +452,10 @@
         // if user has not enter anything, we dun display the valid icon
         if (self.value == nil) {// || value.length() == 0
             valStatus = nil; // optional field, we will mark this validation as optional by passing null
+            return valStatus;
         }
     }
+    
     // custom validator
     for(id<XLFormValidatorProtocol> v in self.validators) {
         if ([v conformsToProtocol:@protocol(XLFormValidatorProtocol)]) {
